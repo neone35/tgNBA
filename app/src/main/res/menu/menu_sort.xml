@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_item_name"
+        android:title="@string/name_title" />
+
+    <item
+        android:id="@+id/menu_item_city"
+        android:title="@string/city_title" />
+
+    <item
+        android:id="@+id/menu_item_conference"
+        android:title="@string/conference_title" />
+
+</menu>

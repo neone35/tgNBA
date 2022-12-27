@@ -2,4 +2,9 @@
     <string name="app_name">tgNBA</string>
     <string name="title_home">Home</string>
     <string name="title_players">Players</string>
+    <string name="name_title">Name</string>
+    <string name="city_title">City</string>
+    <string name="conference_title">Conference</string>
+    <string name="search">Search</string>
+    <string name="back_home">&lt; Home</string>
 </resources>

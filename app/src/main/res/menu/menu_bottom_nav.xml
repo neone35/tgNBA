@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/frag_home"
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_player"
+        android:id="@+id/frag_player"
         android:title="@string/title_players" />
 
 </menu>
