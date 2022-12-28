@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.arturmaslov.tgnba.data.models.GameResponse
 import com.arturmaslov.tgnba.data.models.PlayerResponse
-import com.arturmaslov.tgnba.data.source.ExpressApi
+import com.arturmaslov.tgnba.data.source.NbaApi
 import com.arturmaslov.tgnba.data.source.SharedDataSource
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 
 class RemoteDataSource(
-    val mExpressApi: ExpressApi,
+    val mNbaApi: NbaApi,
     private val mDispatcher: CoroutineDispatcher
 ) : RemoteData {
 
@@ -27,7 +27,7 @@ class RemoteDataSource(
     override suspend fun fetchUpdateTeams() {
         Logger.i("Running fetchUpdateTeams()")
         withContext(mDispatcher) {
-            val call = mExpressApi.apiService.fetchTeamResponse()
+            val call = mNbaApi.apiService.fetchTeamResponse()
             val name = object {}.javaClass.enclosingMethod?.name
             mSharedDataSource?.checkCallResultAndSave(call, name!!)
         }
@@ -37,7 +37,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running checkCallAndReturn()")
             var resultData: T? = null
-            when (val result = mExpressApi.getResult(call)) {
+            when (val result = mNbaApi.getResult(call)) {
                 is Result.Success -> {
                     Logger.d("Success: remote data retrieved")
                     resultData = result.data
@@ -53,7 +53,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running fetchGameResponse()")
             val liveData = MutableLiveData<GameResponse?>()
-            val call = mExpressApi.apiService.fetchGameResponse(teamIds, page)
+            val call = mNbaApi.apiService.fetchGameResponse(teamIds, page)
             val name = object {}.javaClass.enclosingMethod?.name
             val resultData: GameResponse? = checkCallAndReturn(call, name!!)
             liveData.postValue(resultData)
@@ -64,7 +64,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running fetchPlayerResponse()")
             val liveData = MutableLiveData<PlayerResponse?>()
-            val call = mExpressApi.apiService.fetchPlayerResponse(searchTerm)
+            val call = mNbaApi.apiService.fetchPlayerResponse(searchTerm)
             val name = object {}.javaClass.enclosingMethod?.name
             val resultData: PlayerResponse? = checkCallAndReturn(call, name!!)
             liveData.postValue(resultData)

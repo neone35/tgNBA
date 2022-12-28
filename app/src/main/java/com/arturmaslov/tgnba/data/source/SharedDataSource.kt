@@ -1,6 +1,5 @@
 package com.arturmaslov.tgnba.data.source
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.arturmaslov.tgnba.data.models.TeamResponse
@@ -20,7 +19,7 @@ class SharedDataSource(
 ) : SharedData {
 
     private val mTeamDao = mLocalDataSource.mLocalDatabase.teamDao
-    private val mExpressApi = mRemoteDataSource.mExpressApi
+    private val mNbaApi = mRemoteDataSource.mNbaApi
 
     // watched from main thread for toast messages
     private val _sharedResponse = MutableLiveData<String?>()
@@ -50,7 +49,7 @@ class SharedDataSource(
     suspend fun <T : Any> checkCallResultAndSave(call: Call<T>, funcName: String) {
         Logger.i("Running checkCallResultAndSave()")
         withContext(mDispatcher) {
-            when (val result = mExpressApi.getResult(call)) {
+            when (val result = mNbaApi.getResult(call)) {
                 is Result.Success -> {
                     Logger.d("Success: remote data retrieved")
                     saveOnRemoteSuccess(result)

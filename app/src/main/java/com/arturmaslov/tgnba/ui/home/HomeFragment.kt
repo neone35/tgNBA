@@ -6,18 +6,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var homeVM: GameVM
+    private val homeVM: HomeVM by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeVM = ViewModelProvider(this).get(GameVM::class.java)
     }
 
     // F.onCreate();

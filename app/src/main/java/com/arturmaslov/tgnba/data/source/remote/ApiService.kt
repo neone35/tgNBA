@@ -10,15 +10,15 @@ import retrofit2.http.Query
 interface ApiService {
 
     @GET("api/v1/teams")
-    fun fetchTeamResponse(): Call<TeamResponse>
+    suspend fun fetchTeamResponse(): Call<TeamResponse>
 
     @GET("api/v1/games")
-    fun fetchGameResponse(
+    suspend fun fetchGameResponse(
         @Query("team_ids") teamIds: List<Int?>?,
         @Query("page") page: Int
     ): Call<GameResponse>
 
     @GET("api/v1/players")
-    fun fetchPlayerResponse(@Query("search") searchTerm: String): Call<PlayerResponse>
+    suspend fun fetchPlayerResponse(@Query("search") searchTerm: String): Call<PlayerResponse>
 
 }

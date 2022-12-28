@@ -9,7 +9,7 @@ import com.orhanobut.logger.Logger
 @Database(
     entities = [
         Team::class,
-    ], version = 17
+    ], version = 1
 )
 @TypeConverters(Converters::class)
 abstract class LocalDatabase : RoomDatabase() {

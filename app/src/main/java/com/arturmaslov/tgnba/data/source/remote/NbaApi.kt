@@ -19,7 +19,7 @@ import com.arturmaslov.tgnba.data.source.remote.Result
 
 enum class ApiStatus { LOADING, ERROR, DONE }
 
-object ExpressApi {
+object NbaApi {
     val apiService: ApiService
     private val retrofit: Retrofit
 
@@ -48,7 +48,7 @@ object ExpressApi {
     suspend fun <T : Any> getResult(call: Call<T>): Result<T> = suspendCoroutine {
         call.enqueue(object : Callback<T> {
             override fun onFailure(call: Call<T>, error: Throwable) {
-                Logger.e("network error: ${error.toString()}")
+                Logger.e("network error: $error")
                 it.resume(Result.NetworkFailure(error))
             }
 
