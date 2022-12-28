@@ -13,11 +13,11 @@ import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var homeVM: TeamVM
+    private lateinit var homeVM: GameVM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeVM = ViewModelProvider(this).get(TeamVM::class.java)
+        homeVM = ViewModelProvider(this).get(GameVM::class.java)
     }
 
     // F.onCreate();

@@ -15,7 +15,7 @@
             app:destination="@id/frag_player" />
         <action
             android:id="@+id/action_frag_home_to_frag_team"
-            app:destination="@id/frag_team" />
+            app:destination="@id/frag_game" />
     </fragment>
 
     <fragment
@@ -25,13 +25,13 @@
         tools:layout="@layout/fragment_player">
         <action
             android:id="@+id/action_frag_player_to_frag_team"
-            app:destination="@id/frag_team" />
+            app:destination="@id/frag_game" />
     </fragment>
 
     <fragment
-        android:id="@+id/frag_team"
-        android:name="com.arturmaslov.tgnba.ui.team.TeamFragment"
+        android:id="@+id/frag_game"
+        android:name="com.arturmaslov.tgnba.ui.game.GameFragment"
         android:label="@string/title_players"
-        tools:layout="@layout/fragment_team" />
+        tools:layout="@layout/fragment_game" />
 
 </navigation>

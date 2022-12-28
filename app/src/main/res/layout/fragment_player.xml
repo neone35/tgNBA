@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/et_player_search"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
@@ -34,10 +34,17 @@
         android:inputType="textPersonName"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_player" />
+
+    <include
+        android:id="@+id/incHeaderPlayer"
+        layout="@layout/header_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/et_player_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_player_list"
@@ -45,15 +52,13 @@
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@color/white"
-        android:paddingHorizontal="8dp"
         android:paddingVertical="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/incHeaderPlayer"
+        tools:listitem="@layout/item_player" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
