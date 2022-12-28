@@ -17,7 +17,7 @@ class LocalDataSource(
     override suspend fun getLocalTeams() =
         withContext(mDispatcher) {
             Logger.i("Running getLocalTeams()")
-            val liveData = MutableLiveData<Team?>()
+            val liveData = MutableLiveData<List<Team?>?>()
             val localTeams = teamDao?.getTeams()
             if (localTeams != null) {
                 liveData.postValue(localTeams)
@@ -54,7 +54,7 @@ class LocalDataSource(
 }
 
 interface LocalData {
-    suspend fun getLocalTeams(): MutableLiveData<Team?>
+    suspend fun getLocalTeams(): MutableLiveData<List<Team?>?>
     suspend fun deleteTeams()
     suspend fun insertTeam(team: Team)
 }

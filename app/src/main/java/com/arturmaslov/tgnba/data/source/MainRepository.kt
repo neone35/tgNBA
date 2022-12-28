@@ -21,28 +21,11 @@ class MainRepository(
     override val sharedResponse: LiveData<String?> get() = mSharedDataSource.sharedResponse
     override val remoteResponse: LiveData<String?> get() = mRemoteDataSource.remoteResponse
 
-    companion object {
-        private lateinit var INSTANCE: MainRepository
-
-        fun getInstance(
-            mLocalDataSource: LocalDataSource,
-            mRemoteDataSource: RemoteDataSource,
-            mSharedDataSource: SharedDataSource
-        ): MainRepository {
-            // The .isInitialized Kotlin property returns true if the lateinit property (INSTANCE in this example) has been assigned a value, and false otherwise.
-            if (!::INSTANCE.isInitialized) {
-                INSTANCE = MainRepository(mLocalDataSource, mRemoteDataSource, mSharedDataSource)
-                Logger.d("Made new database instance")
-            }
-            return INSTANCE
-        }
-    }
-
     init {
         Logger.d("Injection MainRepository")
     }
 
-    override suspend fun getLocalTeams(): MutableLiveData<Team?> {
+    override suspend fun getLocalTeams(): MutableLiveData<List<Team?>?> {
         return mLocalDataSource.getLocalTeams()
     }
 
@@ -54,8 +37,8 @@ class MainRepository(
         return mLocalDataSource.insertTeam(team)
     }
 
-    override suspend fun fetchUpdateTeams() {
-        return mRemoteDataSource.fetchUpdateTeams()
+    override suspend fun updateLocalTeams() {
+        return mRemoteDataSource.updateLocalTeams()
     }
 
     override suspend fun fetchGameResponse(

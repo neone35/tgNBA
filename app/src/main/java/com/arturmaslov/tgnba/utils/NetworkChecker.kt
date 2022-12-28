@@ -1,4 +1,4 @@
-package com.arturmaslov.tgnba
+package com.arturmaslov.tgnba.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

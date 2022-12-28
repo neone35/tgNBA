@@ -24,7 +24,7 @@ class RemoteDataSource(
     override val remoteResponse: LiveData<String?> get() = _remoteResponse
 
     // update local courier without logging in
-    override suspend fun fetchUpdateTeams() {
+    override suspend fun updateLocalTeams() {
         Logger.i("Running fetchUpdateTeams()")
         withContext(mDispatcher) {
             val call = mNbaApi.apiService.fetchTeamResponse()
@@ -75,7 +75,7 @@ class RemoteDataSource(
 
 interface RemoteData {
     val remoteResponse: LiveData<String?>
-    suspend fun fetchUpdateTeams()
+    suspend fun updateLocalTeams()
     suspend fun fetchGameResponse(teamIds: List<Int?>?, page: Int): MutableLiveData<GameResponse?>
     suspend fun fetchPlayerResponse(searchTerm: String): MutableLiveData<PlayerResponse?>
 }

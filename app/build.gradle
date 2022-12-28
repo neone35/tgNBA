@@ -67,6 +67,8 @@ dependencies {
     androidTestImplementation "androidx.room:room-testing:2.4.3"
     // logger
     implementation 'com.orhanobut:logger:2.2.0'
+    // UI
+    implementation 'com.github.GrenderG:Toasty:1.5.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
