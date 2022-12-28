@@ -1,7 +1,10 @@
-package com.arturmaslov.tgnba.data
+package com.arturmaslov.tgnba.data.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity
 data class Team(
 
     @field:SerializedName("division")
@@ -19,6 +22,7 @@ data class Team(
     @field:SerializedName("name")
     val name: String? = null,
 
+    @field:PrimaryKey
     @field:SerializedName("id")
     val id: Int? = null,
 
