@@ -39,7 +39,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="?attr/actionBarSize"
-        app:navGraph="@navigation/nav_main_bottom" />
+        app:navGraph="@navigation/nav_main" />
 
     <ProgressBar
         android:id="@+id/pb_loading"
