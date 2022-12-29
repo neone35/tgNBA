@@ -11,9 +11,13 @@ import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-enum class ApiStatus { LOADING, ERROR, DONE }
+enum class LoadStatus { LOADING, ERROR, DONE }
 
 class NbaApi(val apiService: ApiService) {
+
+    init {
+        Logger.d("NbaApi initialized")
+    }
 
     // checks remote response result before sending to repository
     suspend fun <T : Any> getResult(call: Call<T>): Result<T> = suspendCoroutine {

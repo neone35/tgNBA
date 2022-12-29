@@ -16,7 +16,7 @@ abstract class LocalDatabase : RoomDatabase() {
 
 @Dao
 interface TeamDao {
-    //Courier
+    //Teams
     @Query("SELECT * FROM team")
     fun getTeams(): List<Team?>?
 

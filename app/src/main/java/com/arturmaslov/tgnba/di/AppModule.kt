@@ -3,6 +3,7 @@ package com.arturmaslov.tgnba.di
 import android.content.Context
 import com.arturmaslov.tgnba.BuildConfig
 import com.arturmaslov.tgnba.Constants
+import com.arturmaslov.tgnba.data.source.NbaApi
 import com.arturmaslov.tgnba.data.source.remote.ApiService
 import com.arturmaslov.tgnba.utils.NetworkChecker
 import com.orhanobut.logger.Logger
@@ -15,9 +16,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
     single { provideOkHttpClient() }
-    single { provideRetrofit(get(), Constants.BASE_URL) }
+    single { provideRetrofit(get()) }
     single { provideApiService(get()) }
     single { provideNetworkChecker(androidContext()) }
+    single { NbaApi(get()) }
 }
 
 private fun provideNetworkChecker(context: Context) = NetworkChecker(context)
@@ -26,9 +28,9 @@ private fun provideApiService(retrofit: Retrofit): ApiService =
     retrofit.create(ApiService::class.java)
 
 private fun provideRetrofit(
-    okHttpClient: OkHttpClient,
-    baseUrl: String
+    okHttpClient: OkHttpClient
 ): Retrofit {
+    val baseUrl = Constants.BASE_URL
     Logger.d("baseUrl is $baseUrl")
 
     val retrofitBuilder: Retrofit.Builder = Retrofit.Builder()

@@ -21,9 +21,9 @@ class LocalDataSource(
             val localTeams = teamDao?.getTeams()
             if (localTeams != null) {
                 liveData.postValue(localTeams)
-                Logger.i("Success: local courier $localTeams retrieved")
+                Logger.i("Success: local teams $localTeams retrieved")
             } else {
-                Logger.i("Failure: unable to retrieve local courier")
+                Logger.i("Failure: unable to retrieve local teams")
             }
             liveData.apply { postValue(localTeams) }
         }

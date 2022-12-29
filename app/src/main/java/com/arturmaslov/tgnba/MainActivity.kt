@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.arturmaslov.tgnba.data.source.ApiStatus
+import com.arturmaslov.tgnba.data.source.LoadStatus
 import com.arturmaslov.tgnba.databinding.ActivityMainBinding
 import com.arturmaslov.tgnba.utils.ToastUtils
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
-import com.orhanobut.logger.BuildConfig
+import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -23,42 +23,31 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainVM: MainVM by viewModel()
+    private var navHostFragment: NavHostFragment? = null
     private var navController: NavController? = null
     private var progressAnimator: ObjectAnimator = ObjectAnimator()
 
     private var disableBackCallback: OnBackPressedCallback? = null
-    private var hideFragment: Boolean = false
-    private var hideLoadingPie: Boolean = false
-
     var teamRVPosition: Int = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpDebugLogging()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbarMainInclude.toolbarIntro)
         binding.toolbarMainInclude.tvAppVer.text = "v${BuildConfig.VERSION_NAME}"
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        observeInternetAvailability()
         loadLoadingPieAnimation()
         setUpNavigation()
-        observeApiStatus(mainVM.extStatus)
+        observeApiStatus(mainVM.extBaseStatus)
         observeRepositoryResponse(mainVM.sharedResponse)
         observeRepositoryResponse(mainVM.remoteResponse)
 
-        mainVM.extInternetAvailable.observe(this) { intAvailable ->
-            Logger.d("Internet is $intAvailable")
-            if (intAvailable == true) {
-                if (navController?.currentDestination?.id != R.id.frag_home)
-                    navController?.navigate(R.id.action_frag_home_self)
-            } else {
-                ToastUtils.updateWarning(this, getString(R.string.no_internet))
-                showLoading(true)
-            }
-        }
-
-        // Impossible to go back for this activity and all its children if loading
+        // Impossible to go back for this activity and all its children if loading when enabled
         disableBackCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 return
@@ -68,8 +57,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun observeInternetAvailability() {
+        mainVM.extInternetAvailable.observe(this) { intAvailable ->
+            Logger.d("Internet is $intAvailable")
+            if (intAvailable == false) {
+                ToastUtils.updateWarning(this, getString(R.string.no_internet))
+                showLoading(true)
+            }
+        }
+    }
+
     private fun setUpNavigation() {
-        navController = findNavController(R.id.nav_host_fragment_activity_main)
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.frag_host_activity_main) as NavHostFragment
+        navController = navHostFragment!!.navController
         binding.bnvMain.setupWithNavController(navController!!)
     }
 
@@ -79,19 +80,19 @@ class MainActivity : AppCompatActivity() {
         progressAnimator.repeatCount = ObjectAnimator.INFINITE
     }
 
-    private fun observeApiStatus(statusLD: LiveData<ApiStatus>) {
+    private fun observeApiStatus(statusLD: LiveData<LoadStatus>) {
         statusLD.observe(this) {
             // show loading animation
             when (it) {
-                ApiStatus.LOADING -> {
+                LoadStatus.LOADING -> {
                     showLoading(true)
                     disableBackCallback?.isEnabled = true
                 }
-                ApiStatus.DONE -> {
+                LoadStatus.DONE -> {
                     showLoading(false)
                     disableBackCallback?.isEnabled = false
                 }
-                ApiStatus.ERROR -> {
+                LoadStatus.ERROR -> {
                     showLoading(false)
                     Logger.e("Failure: $it")
                     disableBackCallback?.isEnabled = false
@@ -118,11 +119,9 @@ class MainActivity : AppCompatActivity() {
         if (showLoading) {
             progressAnimator.start()
             binding.pbLoading.visibility = View.VISIBLE
-            if (hideFragment) binding.navHostFragmentActivityMain.visibility = View.INVISIBLE
-            if (hideLoadingPie) binding.pbLoading.visibility = View.INVISIBLE
         } else {
             binding.pbLoading.visibility = View.GONE
-            binding.navHostFragmentActivityMain.visibility = View.VISIBLE
+            binding.fragHostActivityMain.visibility = View.VISIBLE
             progressAnimator.end()
         }
     }
@@ -132,5 +131,12 @@ class MainActivity : AppCompatActivity() {
         val layoutParams = binding.bnvMain.layoutParams as CoordinatorLayout.LayoutParams
         val bottomViewNavigationBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
         bottomViewNavigationBehavior.slideUp(binding.bnvMain)
+    }
+
+    private fun setUpDebugLogging() {
+        Logger.clearLogAdapters()
+        if (BuildConfig.DEBUG) {
+            Logger.addLogAdapter(AndroidLogAdapter())
+        }
     }
 }

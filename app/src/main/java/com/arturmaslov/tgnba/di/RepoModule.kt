@@ -1,5 +1,8 @@
 package com.arturmaslov.tgnba.di
 
+import android.app.Application
+import androidx.room.Room
+import com.arturmaslov.tgnba.Constants
 import com.arturmaslov.tgnba.data.source.MainRepository
 import com.arturmaslov.tgnba.data.source.NbaApi
 import com.arturmaslov.tgnba.data.source.SharedDataSource
@@ -8,6 +11,7 @@ import com.arturmaslov.tgnba.data.source.local.LocalDatabase
 import com.arturmaslov.tgnba.data.source.remote.RemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val repoModule = module {
@@ -16,6 +20,17 @@ val repoModule = module {
     single { provideRemoteDataSource(get(), get()) }
     single { provideSharedDataSource(get(), get(), get()) }
     single { provideDispatcherIO() }
+    single { provideLocalDatabase(androidApplication()) }
+}
+
+fun provideLocalDatabase(app: Application): LocalDatabase {
+    val dbName = Constants.DATABASE_NAME
+    return Room.databaseBuilder(
+        app,
+        LocalDatabase::class.java, dbName
+    )
+        .fallbackToDestructiveMigration()
+        .build()
 }
 
 private fun provideDispatcherIO() = Dispatchers.IO

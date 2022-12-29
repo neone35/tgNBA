@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.arturmaslov.tgnba.data.models.TeamResponse
 import com.arturmaslov.tgnba.data.source.local.LocalDataSource
 import com.arturmaslov.tgnba.data.source.remote.RemoteDataSource
+import com.arturmaslov.tgnba.data.source.remote.Result
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.Call
-import com.arturmaslov.tgnba.data.source.remote.Result
 
 // methods using local and remote sources
 class SharedDataSource(
@@ -19,7 +19,7 @@ class SharedDataSource(
 ) : SharedData {
 
     private val mTeamDao = mLocalDataSource.mLocalDatabase.teamDao
-    private val mNbaApi = mRemoteDataSource.mNbaApi
+    private val mNbaApi = mRemoteDataSource.nbaApi
 
     // watched from main thread for toast messages
     private val _sharedResponse = MutableLiveData<String?>()

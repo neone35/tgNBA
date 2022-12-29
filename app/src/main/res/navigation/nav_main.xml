@@ -14,7 +14,7 @@
             android:id="@+id/action_frag_home_to_frag_player"
             app:destination="@id/frag_player" />
         <action
-            android:id="@+id/action_frag_home_to_frag_team"
+            android:id="@+id/action_frag_home_to_frag_game"
             app:destination="@id/frag_game" />
         <action
             android:id="@+id/action_frag_home_self"

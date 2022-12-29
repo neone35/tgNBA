@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 
 class RemoteDataSource(
-    val mNbaApi: NbaApi,
+    val nbaApi: NbaApi,
     private val mDispatcher: CoroutineDispatcher
 ) : RemoteData {
 
@@ -24,10 +24,10 @@ class RemoteDataSource(
     override val remoteResponse: LiveData<String?> get() = _remoteResponse
 
     // update local courier without logging in
-    override suspend fun updateLocalTeams() {
-        Logger.i("Running fetchUpdateTeams()")
+    override suspend fun updateLocalTeamList() {
+        Logger.i("Running updateLocalTeamList()")
         withContext(mDispatcher) {
-            val call = mNbaApi.apiService.fetchTeamResponse()
+            val call = nbaApi.apiService.fetchTeamResponse()
             val name = object {}.javaClass.enclosingMethod?.name
             mSharedDataSource?.checkCallResultAndSave(call, name!!)
         }
@@ -37,7 +37,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running checkCallAndReturn()")
             var resultData: T? = null
-            when (val result = mNbaApi.getResult(call)) {
+            when (val result = nbaApi.getResult(call)) {
                 is Result.Success -> {
                     Logger.d("Success: remote data retrieved")
                     resultData = result.data
@@ -53,7 +53,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running fetchGameResponse()")
             val liveData = MutableLiveData<GameResponse?>()
-            val call = mNbaApi.apiService.fetchGameResponse(teamIds, page)
+            val call = nbaApi.apiService.fetchGameResponse(teamIds, page)
             val name = object {}.javaClass.enclosingMethod?.name
             val resultData: GameResponse? = checkCallAndReturn(call, name!!)
             liveData.postValue(resultData)
@@ -64,7 +64,7 @@ class RemoteDataSource(
         withContext(mDispatcher) {
             Logger.i("Running fetchPlayerResponse()")
             val liveData = MutableLiveData<PlayerResponse?>()
-            val call = mNbaApi.apiService.fetchPlayerResponse(searchTerm)
+            val call = nbaApi.apiService.fetchPlayerResponse(searchTerm)
             val name = object {}.javaClass.enclosingMethod?.name
             val resultData: PlayerResponse? = checkCallAndReturn(call, name!!)
             liveData.postValue(resultData)
@@ -75,7 +75,7 @@ class RemoteDataSource(
 
 interface RemoteData {
     val remoteResponse: LiveData<String?>
-    suspend fun updateLocalTeams()
+    suspend fun updateLocalTeamList()
     suspend fun fetchGameResponse(teamIds: List<Int?>?, page: Int): MutableLiveData<GameResponse?>
     suspend fun fetchPlayerResponse(searchTerm: String): MutableLiveData<PlayerResponse?>
 }

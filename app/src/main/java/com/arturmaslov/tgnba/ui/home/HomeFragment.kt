@@ -2,8 +2,10 @@ package com.arturmaslov.tgnba.ui.home
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import com.arturmaslov.tgnba.MainActivity
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Team
 import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
+import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -25,6 +28,21 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = (requireActivity() as MainActivity)
+        homeVM.updateLocalTeamList()
+        Logger.i("Creating HomeFragment")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Logger.d("HomeFragment onCreateView")
+
+        binding = FragmentHomeBinding.inflate(layoutInflater)
+        rv = binding.rvTeamList
+
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     // F.onCreate();
@@ -38,21 +56,13 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity.slideUpBottomNav()
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = FragmentHomeBinding.bind(view)
-        rv = binding.rvTeamList
-
-        homeVM.updateLocalTeamList()
-        homeVM.extTeamList.observe(viewLifecycleOwner) {
+        homeVM.extTeamList.observe(this) {
             setTeamList(it)
         }
         binding.btnSort.setOnClickListener {
             showSortPopup(it)
         }
-
     }
 
     private fun setTeamList(teamList: List<Team?>?) {
@@ -60,7 +70,7 @@ class HomeFragment : Fragment() {
         val currentItemCount = rv?.adapter?.itemCount
         if (currentItemCount == null || currentItemCount == 0) {
             // create new adapter with initial data
-            val adapter = TeamListAdapter(mutableTeamList)
+            val adapter = TeamListAdapter(mutableTeamList, homeVM)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
             rv?.scrollToPosition(mainActivity.teamRVPosition)
@@ -69,7 +79,7 @@ class HomeFragment : Fragment() {
             rvState = rv?.layoutManager?.onSaveInstanceState()
             val currentAdapter = rv?.adapter as? TeamListAdapter
             currentAdapter?.updateOrderList(teamList)
-            currentAdapter?.notifyDataSetChanged()
+            currentAdapter?.notifyItemRangeChanged(0, currentItemCount)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
             rv?.scrollToPosition(mainActivity.teamRVPosition)
         }
@@ -104,6 +114,18 @@ class HomeFragment : Fragment() {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                mainActivity.teamRVPosition =
+                    (recyclerView.layoutManager as LinearLayoutManager)
+                        .findFirstCompletelyVisibleItemPosition()
+            }
+        })
     }
 
     override fun onDestroyView() {

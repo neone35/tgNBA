@@ -37,8 +37,8 @@ class MainRepository(
         return mLocalDataSource.insertTeam(team)
     }
 
-    override suspend fun updateLocalTeams() {
-        return mRemoteDataSource.updateLocalTeams()
+    override suspend fun updateLocalTeamList() {
+        return mRemoteDataSource.updateLocalTeamList()
     }
 
     override suspend fun fetchGameResponse(
