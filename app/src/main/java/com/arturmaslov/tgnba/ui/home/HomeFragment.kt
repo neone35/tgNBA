@@ -8,15 +8,15 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.arturmaslov.tgnba.MainActivity
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Team
 import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
-import com.arturmaslov.tgnba.ui.UiInterface
+import com.arturmaslov.tgnba.ui.UiHelper
+import com.arturmaslov.tgnba.ui.main.MainActivity
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment(R.layout.fragment_home), UiInterface {
+class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
 
     private lateinit var binding: FragmentHomeBinding
     private val homeVM: HomeVM by viewModel()
@@ -49,7 +49,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiInterface {
 
     override fun setObservers() {
         mainActivity.observeApiStatus(homeVM.extLoadStatus)
-        mainActivity.observeRepositoryResponse(homeVM.sharedResponse)
         mainActivity.observeRepositoryResponse(homeVM.remoteResponse)
 
         homeVM.extTeamList.observe(viewLifecycleOwner) {

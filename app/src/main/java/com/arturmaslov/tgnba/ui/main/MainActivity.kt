@@ -1,4 +1,4 @@
-package com.arturmaslov.tgnba
+package com.arturmaslov.tgnba.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,16 +10,18 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.arturmaslov.tgnba.BuildConfig
+import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.source.LoadStatus
 import com.arturmaslov.tgnba.databinding.ActivityMainBinding
-import com.arturmaslov.tgnba.ui.UiInterface
+import com.arturmaslov.tgnba.ui.UiHelper
 import com.arturmaslov.tgnba.utils.ToastUtils
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity(), UiInterface {
+class MainActivity : AppCompatActivity(), UiHelper {
 
     private lateinit var binding: ActivityMainBinding
     private val mainVM: MainVM by viewModel()
@@ -47,7 +49,6 @@ class MainActivity : AppCompatActivity(), UiInterface {
     override fun setObservers() {
         observeInternetAvailability()
         observeApiStatus(mainVM.extLoadStatus)
-        observeRepositoryResponse(mainVM.sharedResponse)
         observeRepositoryResponse(mainVM.remoteResponse)
     }
 

@@ -1,6 +1,6 @@
 package com.arturmaslov.tgnba.ui
 
-interface UiInterface {
+interface UiHelper {
 
     fun setListeners()
     fun setObservers()

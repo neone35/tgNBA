@@ -31,7 +31,13 @@ class HomeVM(
         viewModelScope.launch {
             setLoadStatus(LoadStatus.LOADING)
             try {
-                mainRepo.updateLocalTeamList()
+                val teamRes = mainRepo.fetchTeamResponse().value
+                val rowIds: MutableList<Int> = mutableListOf()
+                teamRes?.data?.forEach {
+                    it?.let { team -> mainRepo.insertTeam(team) }
+                        ?.let { rowId -> rowIds.add(rowId.toInt()) }
+                }
+                Logger.d("$rowIds ids inserted into database")
                 _teamList.value = mainRepo.getLocalTeams().value
                 sortTeamList(TeamSortOption.NAME) // default sort
                 setLoadStatus(LoadStatus.DONE)
@@ -42,19 +48,19 @@ class HomeVM(
         }
     }
 
-    fun sortTeamList(byWhat: TeamSortOption) {
-        Logger.i("Running HomeVM sortTeamList with $byWhat")
+    fun sortTeamList(by: TeamSortOption) {
+        Logger.i("Running HomeVM sortTeamList with $by")
         viewModelScope.launch {
             setLoadStatus(LoadStatus.LOADING)
             try {
                 _teamList.value = _teamList.value?.sortedBy {
-                    when (byWhat) {
+                    when (by) {
                         TeamSortOption.NAME -> it?.name
                         TeamSortOption.CITY -> it?.city
                         TeamSortOption.CONFERENCE -> it?.conference
                     }
                 }
-                _teamSortOption.value = byWhat.sortOption
+                _teamSortOption.value = by.sortOption
                 setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {
                 setLoadStatus(LoadStatus.ERROR)

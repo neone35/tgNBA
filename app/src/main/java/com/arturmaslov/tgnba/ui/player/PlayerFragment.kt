@@ -9,15 +9,15 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.arturmaslov.tgnba.MainActivity
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Player
 import com.arturmaslov.tgnba.databinding.FragmentPlayerBinding
-import com.arturmaslov.tgnba.ui.UiInterface
+import com.arturmaslov.tgnba.ui.UiHelper
+import com.arturmaslov.tgnba.ui.main.MainActivity
 import com.arturmaslov.tgnba.utils.ToastUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayerFragment : Fragment(R.layout.fragment_player), UiInterface {
+class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
 
     private lateinit var binding: FragmentPlayerBinding
     private val playerVM: PlayerVM by viewModel()
@@ -59,16 +59,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiInterface {
 
     override fun setObservers() {
         mainActivity.observeApiStatus(playerVM.extLoadStatus)
-        mainActivity.observeRepositoryResponse(playerVM.sharedResponse)
         mainActivity.observeRepositoryResponse(playerVM.remoteResponse)
 
         playerVM.extPlayerList.observe(viewLifecycleOwner) {
-            if (!it.isNullOrEmpty()) {
-                setPlayerList(it)
-                binding.tvProvideSearchTerm.visibility = View.GONE
-            } else {
-                binding.tvProvideSearchTerm.visibility = View.VISIBLE
-            }
+            setPlayerList(it)
+            val tv = binding.tvProvideSearchTerm
+            if (!it.isNullOrEmpty())
+                tv.visibility = View.GONE
+            else
+                tv.visibility = View.VISIBLE
         }
         playerVM.extSearchTerm.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {

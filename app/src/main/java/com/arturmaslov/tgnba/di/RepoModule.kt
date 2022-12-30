@@ -2,13 +2,12 @@ package com.arturmaslov.tgnba.di
 
 import android.app.Application
 import androidx.room.Room
-import com.arturmaslov.tgnba.Constants
 import com.arturmaslov.tgnba.data.source.MainRepository
 import com.arturmaslov.tgnba.data.source.NbaApi
-import com.arturmaslov.tgnba.data.source.SharedDataSource
 import com.arturmaslov.tgnba.data.source.local.LocalDataSource
 import com.arturmaslov.tgnba.data.source.local.LocalDatabase
 import com.arturmaslov.tgnba.data.source.remote.RemoteDataSource
+import com.arturmaslov.tgnba.utils.Constants
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
@@ -18,7 +17,6 @@ val repoModule = module {
     single { provideMainRepository(get(), get(), get()) }
     single { provideLocalDataSource(get(), get()) }
     single { provideRemoteDataSource(get(), get()) }
-    single { provideSharedDataSource(get(), get(), get()) }
     single { provideDispatcherIO() }
     single { provideLocalDatabase(androidApplication()) }
 }
@@ -42,8 +40,7 @@ private fun provideMainRepository(
 ): MainRepository {
     val localDataSource = provideLocalDataSource(localDB, dispatcher)
     val remoteDataSource = provideRemoteDataSource(nbaApi, dispatcher)
-    val sharedDataSource = provideSharedDataSource(localDataSource, remoteDataSource, dispatcher)
-    return MainRepository(localDataSource, remoteDataSource, sharedDataSource)
+    return MainRepository(localDataSource, remoteDataSource)
 }
 
 private fun provideLocalDataSource(
@@ -58,13 +55,4 @@ private fun provideRemoteDataSource(
     dispatcher: CoroutineDispatcher
 ): RemoteDataSource {
     return RemoteDataSource(nbaApi, dispatcher)
-}
-
-private fun provideSharedDataSource(
-    localDataSource: LocalDataSource,
-    remoteDataSource: RemoteDataSource,
-    dispatcher: CoroutineDispatcher
-)
-        : SharedDataSource {
-    return SharedDataSource(localDataSource, remoteDataSource, dispatcher)
 }

@@ -17,7 +17,6 @@ open class BaseVM(
     private val app: Application
 ) : ViewModel() {
 
-    val sharedResponse: LiveData<String?> get() = mainRepo.sharedResponse
     val remoteResponse: LiveData<String?> get() = mainRepo.remoteResponse
 
     private val _internetIsAvailable = MutableLiveData<Boolean?>()

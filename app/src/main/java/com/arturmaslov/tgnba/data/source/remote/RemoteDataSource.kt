@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.arturmaslov.tgnba.data.models.GameResponse
 import com.arturmaslov.tgnba.data.models.PlayerResponse
+import com.arturmaslov.tgnba.data.models.TeamResponse
 import com.arturmaslov.tgnba.data.source.NbaApi
-import com.arturmaslov.tgnba.data.source.SharedDataSource
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -16,22 +16,9 @@ class RemoteDataSource(
     private val mDispatcher: CoroutineDispatcher
 ) : RemoteData {
 
-    // will be set from sharedDataSource init()
-    var mSharedDataSource: SharedDataSource? = null
-
     // watched from main thread for toast messages
     private val _remoteResponse = MutableLiveData<String?>()
     override val remoteResponse: LiveData<String?> get() = _remoteResponse
-
-    // update local courier without logging in
-    override suspend fun updateLocalTeamList() {
-        Logger.i("Running updateLocalTeamList()")
-        withContext(mDispatcher) {
-            val call = nbaApi.apiService.fetchTeamResponse()
-            val name = object {}.javaClass.enclosingMethod?.name
-            mSharedDataSource?.checkCallResultAndSave(call, name!!)
-        }
-    }
 
     private suspend fun <T : Any> checkCallAndReturn(call: Call<T>, funcName: String): T? =
         withContext(mDispatcher) {
@@ -47,6 +34,17 @@ class RemoteDataSource(
                 is Result.Loading -> Logger.d("$funcName is loading")
             }
             return@withContext resultData
+        }
+
+    override suspend fun fetchTeamResponse() =
+        withContext(mDispatcher) {
+            Logger.i("Running fetchTeamResponse()")
+            val liveData = MutableLiveData<TeamResponse?>()
+            val call = nbaApi.apiService.fetchTeamResponse()
+            val name = object {}.javaClass.enclosingMethod?.name
+            val resultData: TeamResponse? = checkCallAndReturn(call, name!!)
+            liveData.postValue(resultData)
+            liveData.apply { postValue(resultData) }
         }
 
     override suspend fun fetchGameResponse(teamIds: List<Int?>?, page: Int) =
@@ -75,7 +73,7 @@ class RemoteDataSource(
 
 interface RemoteData {
     val remoteResponse: LiveData<String?>
-    suspend fun updateLocalTeamList()
+    suspend fun fetchTeamResponse(): MutableLiveData<TeamResponse?>
     suspend fun fetchGameResponse(teamIds: List<Int?>?, page: Int): MutableLiveData<GameResponse?>
     suspend fun fetchPlayerResponse(searchTerm: String): MutableLiveData<PlayerResponse?>
 }

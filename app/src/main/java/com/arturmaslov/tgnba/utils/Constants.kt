@@ -1,4 +1,4 @@
-package com.arturmaslov.tgnba
+package com.arturmaslov.tgnba.utils
 
 object Constants {
     const val DATABASE_NAME = "tgNBA_DB"

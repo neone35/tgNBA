@@ -12,5 +12,5 @@
     <string name="first_name_title">First Name</string>
     <string name="last_name_title">Last Name</string>
     <string name="team_title">Team</string>
-    <string name="provide_search_term">Provide search term</string>
+    <string name="provide_search_term">Nothing found. \n Provide search term</string>
 </resources>

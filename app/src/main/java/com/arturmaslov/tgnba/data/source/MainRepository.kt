@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.arturmaslov.tgnba.data.models.GameResponse
 import com.arturmaslov.tgnba.data.models.PlayerResponse
 import com.arturmaslov.tgnba.data.models.Team
+import com.arturmaslov.tgnba.data.models.TeamResponse
 import com.arturmaslov.tgnba.data.source.local.LocalData
 import com.arturmaslov.tgnba.data.source.local.LocalDataSource
 import com.arturmaslov.tgnba.data.source.remote.RemoteData
@@ -13,12 +14,10 @@ import com.orhanobut.logger.Logger
 
 class MainRepository(
     private val mLocalDataSource: LocalDataSource,
-    private val mRemoteDataSource: RemoteDataSource,
-    private val mSharedDataSource: SharedDataSource,
-) : LocalData, RemoteData, SharedData {
+    private val mRemoteDataSource: RemoteDataSource
+) : LocalData, RemoteData {
 
     // watched from main thread for toast messages
-    override val sharedResponse: LiveData<String?> get() = mSharedDataSource.sharedResponse
     override val remoteResponse: LiveData<String?> get() = mRemoteDataSource.remoteResponse
 
     init {
@@ -33,12 +32,12 @@ class MainRepository(
         return mLocalDataSource.deleteTeams()
     }
 
-    override suspend fun insertTeam(team: Team) {
+    override suspend fun insertTeam(team: Team): Long? {
         return mLocalDataSource.insertTeam(team)
     }
 
-    override suspend fun updateLocalTeamList() {
-        return mRemoteDataSource.updateLocalTeamList()
+    override suspend fun fetchTeamResponse(): MutableLiveData<TeamResponse?> {
+        return mRemoteDataSource.fetchTeamResponse()
     }
 
     override suspend fun fetchGameResponse(

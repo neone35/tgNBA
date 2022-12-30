@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class LocalDataSource(
-    val mLocalDatabase: LocalDatabase,
+    mLocalDatabase: LocalDatabase,
     private val mDispatcher: CoroutineDispatcher
 ) : LocalData {
 
@@ -40,7 +40,7 @@ class LocalDataSource(
             }
         }
 
-    override suspend fun insertTeam(team: Team) =
+    override suspend fun insertTeam(team: Team): Long? =
         withContext(mDispatcher) {
             Logger.i("Running insertTeam()")
             val insertedId = teamDao?.insertTeam(team)
@@ -49,6 +49,7 @@ class LocalDataSource(
             } else {
                 Logger.i("Failure: unable to delete local team data settings")
             }
+            return@withContext insertedId
         }
 
 }
@@ -56,5 +57,5 @@ class LocalDataSource(
 interface LocalData {
     suspend fun getLocalTeams(): MutableLiveData<List<Team?>?>
     suspend fun deleteTeams()
-    suspend fun insertTeam(team: Team)
+    suspend fun insertTeam(team: Team): Long?
 }
