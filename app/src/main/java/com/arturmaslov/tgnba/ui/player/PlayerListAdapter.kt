@@ -2,15 +2,16 @@ package com.arturmaslov.tgnba.ui.player
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Player
 import com.arturmaslov.tgnba.databinding.ItemPlayerBinding
+import com.arturmaslov.tgnba.utils.Constants
 
 class PlayerListAdapter(
-    private val playerList: MutableList<Player?>?,
-    private val playerVM: PlayerVM
+    private val playerList: MutableList<Player?>?
 ) : RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
     private lateinit var itemBinding: ItemPlayerBinding
@@ -36,14 +37,11 @@ class PlayerListAdapter(
         return playerList?.size ?: 0
     }
 
-    // replace orders with new remote list
     fun updatePlayerList(playerList: List<Player?>?) {
-        // clear old list
         this.playerList?.clear()
-        // create new list and set previous expanded states
-        playerList?.forEach { order ->
-            if (order != null) {
-                this.playerList?.add(order)
+        playerList?.forEach { player ->
+            if (player != null) {
+                this.playerList?.add(player)
             }
         }
     }
@@ -58,9 +56,12 @@ class PlayerListAdapter(
 
             itemBinding.clPlayerItemParent.setOnClickListener {
                 val navController = it.findNavController()
-                if (navController.currentDestination?.id == R.id.frag_game) {
-                    player.team?.let { team -> playerVM.setBaseTeam(team) }
-                    navController.navigate(R.id.action_frag_player_to_frag_game)
+                if (navController.currentDestination?.id == R.id.frag_player) {
+                    val bundle = bundleOf(
+                        Constants.TEAM_ID to player.team?.id,
+                        Constants.TEAM_NAME to player.team?.name,
+                    )
+                    navController.navigate(R.id.action_frag_player_to_frag_game, bundle)
                 }
             }
         }

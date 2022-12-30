@@ -14,7 +14,7 @@ interface ApiService {
 
     @GET("api/v1/games")
     fun fetchGameResponse(
-        @Query("team_ids") teamIds: List<Int?>?,
+        @Query("team_ids[]") teamIds: List<Int?>?,
         @Query("page") page: Int
     ): Call<GameResponse>
 

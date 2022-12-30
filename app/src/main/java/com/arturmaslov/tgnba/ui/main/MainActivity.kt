@@ -15,6 +15,7 @@ import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.source.LoadStatus
 import com.arturmaslov.tgnba.databinding.ActivityMainBinding
 import com.arturmaslov.tgnba.ui.UiHelper
+import com.arturmaslov.tgnba.utils.Constants
 import com.arturmaslov.tgnba.utils.ToastUtils
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.orhanobut.logger.AndroidLogAdapter
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity(), UiHelper {
     private var disableBackCallback: OnBackPressedCallback? = null
     var teamRVPosition: Int = 0
     var playerRVPosition: Int = 0
+    var gameRVPosition: Int = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), UiHelper {
 
     override fun setObservers() {
         observeInternetAvailability()
-        observeApiStatus(mainVM.extLoadStatus)
+        observeLoadStatus(mainVM.extLoadStatus)
         observeRepositoryResponse(mainVM.remoteResponse)
     }
 
@@ -79,7 +81,7 @@ class MainActivity : AppCompatActivity(), UiHelper {
         binding.bnvMain.setupWithNavController(navController!!)
     }
 
-    fun observeApiStatus(statusLD: LiveData<LoadStatus>) {
+    fun observeLoadStatus(statusLD: LiveData<LoadStatus>) {
         statusLD.observe(this) {
             Logger.d("api status is $it")
             when (it) {
@@ -124,12 +126,18 @@ class MainActivity : AppCompatActivity(), UiHelper {
         }
     }
 
-    fun slideUpBottomNav() {
-        Logger.d("sliding up bottom nav")
+    fun controlBottomNav(action: String) {
+        Logger.d("sliding bottom nav")
         val layoutParams = binding.bnvMain.layoutParams as CoordinatorLayout.LayoutParams
         val bottomViewNavigationBehavior = layoutParams.behavior as HideBottomViewOnScrollBehavior
-        bottomViewNavigationBehavior.slideUp(binding.bnvMain)
+        when (action) {
+            Constants.SLIDE_UP -> bottomViewNavigationBehavior.slideUp(binding.bnvMain)
+            Constants.SLIDE_DOWN -> bottomViewNavigationBehavior.slideDown(binding.bnvMain)
+            Constants.HIDE -> binding.bnvMain.visibility = View.GONE
+            Constants.SHOW -> binding.bnvMain.visibility = View.VISIBLE
+        }
     }
+
 
     private fun setUpDebugLogging() {
         Logger.clearLogAdapters()

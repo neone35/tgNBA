@@ -27,7 +27,7 @@ class HomeVM(
     }
 
     fun updateLocalTeamList() {
-        Logger.i("Running MainVM updateLocalTeamList")
+        Logger.i("Running HomeVM updateLocalTeamList")
         viewModelScope.launch {
             setLoadStatus(LoadStatus.LOADING)
             try {

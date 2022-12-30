@@ -22,18 +22,16 @@ class PlayerVM(
     val extSearchTerm: LiveData<String?> get() = _searchTerm
 
     init {
-        // runs every time VM is created (not view created)
         Logger.i("PlayerVM created!")
     }
 
     fun fetchPlayerList(searchTerm: String) {
-        Logger.i("Running MainVM updateLocalTeamList")
+        Logger.i("Running PlayerVM fetchPlayerList")
         viewModelScope.launch {
             setLoadStatus(LoadStatus.LOADING)
             try {
                 val playerRes = mainRepo.fetchPlayerResponse(searchTerm).value
-                _playerList.value = playerRes?.data
-                _playerList.value?.sortedBy { it?.lastName }
+                _playerList.value = playerRes?.data?.sortedBy { it?.lastName }
                 _searchTerm.value = searchTerm
                 setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {

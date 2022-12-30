@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 
 class RemoteDataSource(
-    val nbaApi: NbaApi,
+    private val nbaApi: NbaApi,
     private val mDispatcher: CoroutineDispatcher
 ) : RemoteData {
 

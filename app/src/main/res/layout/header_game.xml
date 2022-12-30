@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp">
@@ -19,7 +18,7 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Home Name" />
+        android:text="@string/home_name" />
 
     <TextView
         android:id="@+id/tv_game_home_score_header"
@@ -35,7 +34,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/tv_game_home_team_header"
         app:layout_constraintVertical_bias="0.0"
-        tools:text="Home Score" />
+        android:text="@string/home_score" />
 
     <TextView
         android:id="@+id/tv_game_visitor_team_header"
@@ -50,7 +49,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/tv_game_home_team_header"
-        tools:text="Visitor Name" />
+        android:text="@string/visitor_name" />
 
     <TextView
         android:id="@+id/tv_game_visitor_score_header"
@@ -64,7 +63,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/tv_game_home_team_header"
-        tools:text="Visitor Score" />
+        android:text="@string/visitor_score" />
 
     <View
         android:id="@+id/divider_game_header"

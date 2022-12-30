@@ -35,6 +35,12 @@
         android:id="@+id/frag_game"
         android:name="com.arturmaslov.tgnba.ui.game.GameFragment"
         android:label="@string/title_players"
-        tools:layout="@layout/fragment_game" />
+        tools:layout="@layout/fragment_game">
+        <action
+            android:id="@+id/action_frag_game_to_frag_home"
+            app:destination="@id/frag_home"
+            app:popUpTo="@id/nav_main"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

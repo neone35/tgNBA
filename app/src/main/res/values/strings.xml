@@ -13,4 +13,8 @@
     <string name="last_name_title">Last Name</string>
     <string name="team_title">Team</string>
     <string name="provide_search_term">Nothing found. \n Provide search term</string>
+    <string name="home_name">Home Name</string>
+    <string name="home_score">Home Score</string>
+    <string name="visitor_name">Visitor Name</string>
+    <string name="visitor_score">Visitor Score</string>
 </resources>

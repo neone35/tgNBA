@@ -2,15 +2,16 @@ package com.arturmaslov.tgnba.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Team
 import com.arturmaslov.tgnba.databinding.ItemTeamBinding
+import com.arturmaslov.tgnba.utils.Constants
 
 class TeamListAdapter(
-    private val teamList: MutableList<Team?>?,
-    private val homeVM: HomeVM
+    private val teamList: MutableList<Team?>?
 ) : RecyclerView.Adapter<TeamListAdapter.ViewHolder>() {
 
     private lateinit var itemBinding: ItemTeamBinding
@@ -33,14 +34,12 @@ class TeamListAdapter(
         return teamList?.size ?: 0
     }
 
-    // replace orders with new remote list
+
     fun updateTeamList(teamList: List<Team?>?) {
-        // clear old list
         this.teamList?.clear()
-        // create new list and set previous expanded states
-        teamList?.forEach { order ->
-            if (order != null) {
-                this.teamList?.add(order)
+        teamList?.forEach { team ->
+            if (team != null) {
+                this.teamList?.add(team)
             }
         }
     }
@@ -56,8 +55,11 @@ class TeamListAdapter(
             itemBinding.clTeamItemParent.setOnClickListener {
                 val navController = it.findNavController()
                 if (navController.currentDestination?.id == R.id.frag_home) {
-                    homeVM.setBaseTeam(team)
-                    navController.navigate(R.id.action_frag_home_to_frag_game)
+                    val bundle = bundleOf(
+                        Constants.TEAM_ID to team.id,
+                        Constants.TEAM_NAME to team.name,
+                    )
+                    navController.navigate(R.id.action_frag_home_to_frag_game, bundle)
                 }
             }
         }

@@ -13,6 +13,7 @@ import com.arturmaslov.tgnba.data.models.Team
 import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
 import com.arturmaslov.tgnba.ui.UiHelper
 import com.arturmaslov.tgnba.ui.main.MainActivity
+import com.arturmaslov.tgnba.utils.Constants
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -48,7 +49,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
     }
 
     override fun setObservers() {
-        mainActivity.observeApiStatus(homeVM.extLoadStatus)
+        mainActivity.observeLoadStatus(homeVM.extLoadStatus)
         mainActivity.observeRepositoryResponse(homeVM.remoteResponse)
 
         homeVM.extTeamList.observe(viewLifecycleOwner) {
@@ -69,7 +70,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
 
     override fun onStart() {
         super.onStart()
-        mainActivity.slideUpBottomNav()
+        mainActivity.controlBottomNav(Constants.SHOW)
+        mainActivity.controlBottomNav(Constants.SLIDE_UP)
     }
 
     private fun setTeamList(teamList: List<Team?>?) {
@@ -77,7 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
         val currentItemCount = rv?.adapter?.itemCount
         if (currentItemCount == null || currentItemCount == 0) {
             // create new adapter with initial data
-            val adapter = TeamListAdapter(mutableTeamList, homeVM)
+            val adapter = TeamListAdapter(mutableTeamList)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
             rv?.scrollToPosition(mainActivity.teamRVPosition)

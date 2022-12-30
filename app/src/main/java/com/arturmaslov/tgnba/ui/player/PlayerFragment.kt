@@ -14,6 +14,7 @@ import com.arturmaslov.tgnba.data.models.Player
 import com.arturmaslov.tgnba.databinding.FragmentPlayerBinding
 import com.arturmaslov.tgnba.ui.UiHelper
 import com.arturmaslov.tgnba.ui.main.MainActivity
+import com.arturmaslov.tgnba.utils.Constants
 import com.arturmaslov.tgnba.utils.ToastUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,6 +40,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
         setObservers()
     }
 
+    override fun onStart() {
+        super.onStart()
+        mainActivity.controlBottomNav(Constants.SHOW)
+        mainActivity.controlBottomNav(Constants.SLIDE_UP)
+    }
+
     override fun setListeners() {
         binding.etPlayerSearch.setOnEditorActionListener { searchTerm, actionId, keyEvent ->
             val imeAction = when (actionId) {
@@ -58,7 +65,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
     }
 
     override fun setObservers() {
-        mainActivity.observeApiStatus(playerVM.extLoadStatus)
+        mainActivity.observeLoadStatus(playerVM.extLoadStatus)
         mainActivity.observeRepositoryResponse(playerVM.remoteResponse)
 
         playerVM.extPlayerList.observe(viewLifecycleOwner) {
@@ -97,7 +104,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
         val currentItemCount = rv?.adapter?.itemCount
         if (currentItemCount == null || currentItemCount == 0) {
             // create new adapter with initial data
-            val adapter = PlayerListAdapter(mutablePlayerList, playerVM)
+            val adapter = PlayerListAdapter(mutablePlayerList)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
             rv?.scrollToPosition(mainActivity.playerRVPosition)
