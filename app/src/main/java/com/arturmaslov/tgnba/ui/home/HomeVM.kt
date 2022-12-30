@@ -18,6 +18,8 @@ class HomeVM(
 
     private val _teamList = MutableLiveData<List<Team?>?>()
     val extTeamList: LiveData<List<Team?>?> get() = _teamList
+    private val _teamSortOption = MutableLiveData<String?>()
+    val extTeamSortOption: LiveData<String?> get() = _teamSortOption
 
     init {
         // runs every time VM is created (not view created)
@@ -27,22 +29,23 @@ class HomeVM(
     fun updateLocalTeamList() {
         Logger.i("Running MainVM updateLocalTeamList")
         viewModelScope.launch {
-            setBaseStatus(LoadStatus.LOADING)
+            setLoadStatus(LoadStatus.LOADING)
             try {
                 mainRepo.updateLocalTeamList()
                 _teamList.value = mainRepo.getLocalTeams().value
-                setBaseStatus(LoadStatus.DONE)
+                sortTeamList(TeamSortOption.NAME) // default sort
+                setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {
-                setBaseStatus(LoadStatus.ERROR)
+                setLoadStatus(LoadStatus.ERROR)
                 Logger.e(e.localizedMessage!!)
             }
         }
     }
 
     fun sortTeamList(byWhat: TeamSortOption) {
-        Logger.i("Running MainVM sortTeamList")
+        Logger.i("Running HomeVM sortTeamList with $byWhat")
         viewModelScope.launch {
-            setBaseStatus(LoadStatus.LOADING)
+            setLoadStatus(LoadStatus.LOADING)
             try {
                 _teamList.value = _teamList.value?.sortedBy {
                     when (byWhat) {
@@ -51,9 +54,10 @@ class HomeVM(
                         TeamSortOption.CONFERENCE -> it?.conference
                     }
                 }
-                setBaseStatus(LoadStatus.DONE)
+                _teamSortOption.value = byWhat.sortOption
+                setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {
-                setBaseStatus(LoadStatus.ERROR)
+                setLoadStatus(LoadStatus.ERROR)
                 Logger.e(e.localizedMessage!!)
             }
         }

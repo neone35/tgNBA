@@ -6,7 +6,7 @@ import com.arturmaslov.tgnba.data.models.Team
 @Database(
     entities = [
         Team::class,
-    ], version = 1
+    ], version = 2
 )
 @TypeConverters(Converters::class)
 abstract class LocalDatabase : RoomDatabase() {
@@ -22,7 +22,7 @@ interface TeamDao {
 
     // returns row id of inserted item
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTeam(courier: Team?): Long
+    fun insertTeam(team: Team?): Long
 
     // returns number of rows affected
     @Query("DELETE FROM team")

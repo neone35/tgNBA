@@ -9,4 +9,8 @@
     <string name="back_home">&lt; Home</string>
     <string name="arrow_as_selection_indicator">arrow as selection indicator</string>
     <string name="no_internet">No internet connection. Try later.</string>
+    <string name="first_name_title">First Name</string>
+    <string name="last_name_title">Last Name</string>
+    <string name="team_title">Team</string>
+    <string name="provide_search_term">Provide search term</string>
 </resources>

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_main_bottom"
+    android:id="@+id/nav_main"
     app:startDestination="@+id/frag_home">
 
     <fragment
@@ -27,7 +27,7 @@
         android:label="@string/title_players"
         tools:layout="@layout/fragment_player">
         <action
-            android:id="@+id/action_frag_player_to_frag_team"
+            android:id="@+id/action_frag_player_to_frag_game"
             app:destination="@id/frag_game" />
     </fragment>
 

@@ -22,33 +22,33 @@ open class BaseVM(
 
     private val _internetIsAvailable = MutableLiveData<Boolean?>()
     val extInternetAvailable: LiveData<Boolean?> get() = _internetIsAvailable
-    private val _baseStatus = MutableLiveData<LoadStatus>()
-    val extBaseStatus: LiveData<LoadStatus> get() = _baseStatus
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val extLoadStatus: LiveData<LoadStatus> get() = _loadStatus
     private val _baseTeam = MutableLiveData<Team?>()
     val extBaseTeam: LiveData<Team?> get() = _baseTeam
 
     init {
         // runs every time VM is created (not view created)
-        Logger.i("baseVM created!")
         viewModelScope.launch {
-            _baseStatus.value = LoadStatus.LOADING
+            _loadStatus.value = LoadStatus.LOADING
             _internetIsAvailable.value = NetworkChecker(app).isNetworkConnected()
-            _baseStatus.value = LoadStatus.DONE
+            _loadStatus.value = LoadStatus.DONE
         }
     }
 
-    fun setBaseStatus(status: LoadStatus) {
-        _baseStatus.value = status
+    fun setLoadStatus(status: LoadStatus) {
+        Logger.i("Running BaseVM setBaseStatus with $status")
+        _loadStatus.value = status
     }
 
     fun setBaseTeam(team: Team) {
         viewModelScope.launch {
-            setBaseStatus(LoadStatus.LOADING)
+            setLoadStatus(LoadStatus.LOADING)
             try {
                 _baseTeam.value = team
-                setBaseStatus(LoadStatus.DONE)
+                setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {
-                setBaseStatus(LoadStatus.ERROR)
+                setLoadStatus(LoadStatus.ERROR)
                 Logger.e(e.message.toString())
             }
         }

@@ -2,10 +2,8 @@ package com.arturmaslov.tgnba.ui.home
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +12,11 @@ import com.arturmaslov.tgnba.MainActivity
 import com.arturmaslov.tgnba.R
 import com.arturmaslov.tgnba.data.models.Team
 import com.arturmaslov.tgnba.databinding.FragmentHomeBinding
+import com.arturmaslov.tgnba.ui.UiInterface
 import com.orhanobut.logger.Logger
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(R.layout.fragment_home), UiInterface {
 
     private lateinit var binding: FragmentHomeBinding
     private val homeVM: HomeVM by viewModel()
@@ -32,17 +31,33 @@ class HomeFragment : Fragment() {
         Logger.i("Creating HomeFragment")
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Logger.d("HomeFragment onCreateView")
-
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Logger.i("HomeFragment onViewCreated")
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentHomeBinding.bind(view)
         rv = binding.rvTeamList
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        setListeners()
+        setObservers()
+    }
+
+    override fun setListeners() {
+        binding.btnSort.setOnClickListener {
+            showSortPopup(it)
+        }
+    }
+
+    override fun setObservers() {
+        mainActivity.observeApiStatus(homeVM.extLoadStatus)
+        mainActivity.observeRepositoryResponse(homeVM.sharedResponse)
+        mainActivity.observeRepositoryResponse(homeVM.remoteResponse)
+
+        homeVM.extTeamList.observe(viewLifecycleOwner) {
+            setTeamList(it)
+        }
+        homeVM.extTeamSortOption.observe(viewLifecycleOwner) {
+            binding.btnSort.text = it
+        }
     }
 
     // F.onCreate();
@@ -56,13 +71,6 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity.slideUpBottomNav()
-
-        homeVM.extTeamList.observe(this) {
-            setTeamList(it)
-        }
-        binding.btnSort.setOnClickListener {
-            showSortPopup(it)
-        }
     }
 
     private fun setTeamList(teamList: List<Team?>?) {
@@ -78,7 +86,7 @@ class HomeFragment : Fragment() {
             // update existing adapter with updated data
             rvState = rv?.layoutManager?.onSaveInstanceState()
             val currentAdapter = rv?.adapter as? TeamListAdapter
-            currentAdapter?.updateOrderList(teamList)
+            currentAdapter?.updateTeamList(teamList)
             currentAdapter?.notifyItemRangeChanged(0, currentItemCount)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
             rv?.scrollToPosition(mainActivity.teamRVPosition)
@@ -92,12 +100,15 @@ class HomeFragment : Fragment() {
             when (item!!.itemId) {
                 R.id.menu_item_name -> {
                     homeVM.sortTeamList(TeamSortOption.NAME)
+                    binding.btnSort.text = getString(R.string.name_title)
                 }
                 R.id.menu_item_city -> {
                     homeVM.sortTeamList(TeamSortOption.CITY)
+                    binding.btnSort.text = getString(R.string.city_title)
                 }
                 R.id.menu_item_conference -> {
                     homeVM.sortTeamList(TeamSortOption.CONFERENCE)
+                    binding.btnSort.text = getString(R.string.conference_title)
                 }
             }
             true
@@ -128,7 +139,4 @@ class HomeFragment : Fragment() {
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

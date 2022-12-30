@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
-        android:id="@+id/flMain"
+        android:id="@+id/fl_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,7 @@
             android:layout_height="match_parent">
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/frag_host_activity_main"
+                android:id="@+id/frag_container_main"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,16 +50,17 @@
                 app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
                 app:menu="@menu/menu_bottom_nav" />
 
-            <ProgressBar
-                android:id="@+id/pb_loading"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </FrameLayout>
 

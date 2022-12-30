@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel { HomeVM(get(), androidApplication()) }
     viewModel { GameVM() }
-    viewModel { PlayerVM() }
+    viewModel { PlayerVM(get(), androidApplication()) }
     viewModel { MainVM(get(), androidApplication()) }
     viewModel { BaseVM(get(), androidApplication()) }
 }

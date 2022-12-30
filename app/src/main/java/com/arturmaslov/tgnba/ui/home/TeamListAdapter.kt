@@ -34,7 +34,7 @@ class TeamListAdapter(
     }
 
     // replace orders with new remote list
-    fun updateOrderList(teamList: List<Team?>?) {
+    fun updateTeamList(teamList: List<Team?>?) {
         // clear old list
         this.teamList?.clear()
         // create new list and set previous expanded states
