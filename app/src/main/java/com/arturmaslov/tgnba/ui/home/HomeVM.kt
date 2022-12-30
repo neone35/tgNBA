@@ -31,21 +31,46 @@ class HomeVM(
         viewModelScope.launch {
             setLoadStatus(LoadStatus.LOADING)
             try {
-                val teamRes = mainRepo.fetchTeamResponse().value
-                val rowIds: MutableList<Int> = mutableListOf()
-                teamRes?.data?.forEach {
-                    it?.let { team -> mainRepo.insertTeam(team) }
-                        ?.let { rowId -> rowIds.add(rowId.toInt()) }
+                val localTeams = mainRepo.getLocalTeams().value
+                // show local data without internet
+                if (extInternetAvailable.value == false && !localTeams.isNullOrEmpty()) {
+                    _teamList.value = localTeams
+                    sortTeamList(TeamSortOption.NAME) // default sort
+                } else {
+                    val remoteTeams = mainRepo.fetchTeamResponse().value?.data
+                    // do not update local DB if remote data is the same
+                    if (!isEqual(localTeams, remoteTeams)) {
+                        val rowIds: MutableList<Int> = mutableListOf()
+                        remoteTeams?.forEach {
+                            it?.let { team -> mainRepo.insertTeam(team) }
+                                ?.let { rowId -> rowIds.add(rowId.toInt()) }
+                        }
+                        Logger.d("$rowIds ids inserted into database")
+                        _teamList.value = mainRepo.getLocalTeams().value
+                    } else {
+                        Logger.i("MainVM teamList local=remote")
+                        _teamList.value = mainRepo.getLocalTeams().value
+                        sortTeamList(TeamSortOption.NAME) // default sort
+                    }
                 }
-                Logger.d("$rowIds ids inserted into database")
-                _teamList.value = mainRepo.getLocalTeams().value
-                sortTeamList(TeamSortOption.NAME) // default sort
                 setLoadStatus(LoadStatus.DONE)
             } catch (e: Exception) {
                 setLoadStatus(LoadStatus.ERROR)
                 Logger.e(e.localizedMessage!!)
             }
         }
+    }
+
+    private fun <T> isEqual(first: List<T>?, second: List<T>?): Boolean {
+        if (first!!.size != second!!.size) {
+            return false
+        }
+        first.forEachIndexed { index, value ->
+            if (second[index] != value) {
+                return false
+            }
+        }
+        return true
     }
 
     fun sortTeamList(by: TeamSortOption) {
