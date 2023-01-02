@@ -1,8 +1,8 @@
 package com.arturmaslov.tgnba.ui.main
 
 import android.app.Application
-import com.arturmaslov.tgnba.BaseVM
 import com.arturmaslov.tgnba.data.source.MainRepository
+import com.arturmaslov.tgnba.ui.BaseVM
 import com.orhanobut.logger.Logger
 
 class MainVM(

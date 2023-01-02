@@ -26,27 +26,18 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
     private var rvState: Parcelable? = null
     private lateinit var mainActivity: MainActivity
 
-    private var teamId: Int? = null
-    private var teamName: String? = null
-
-    private var currentPage: Int = 1
-    private var visibleItemCount: Int = 0
-    private var totalItemCount: Int = 0
-    private var firstVisibleItemPos: Int = 0
-    private var canLoadMore: Boolean = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActivity = (requireActivity() as MainActivity)
-        teamId = arguments?.getInt(Constants.TEAM_ID)
-        teamName = arguments?.getString(Constants.TEAM_NAME)
-        gameVM.fetchGameList(listOf(teamId), currentPage)
+        gameVM.teamId = arguments?.getInt(Constants.TEAM_ID)
+        gameVM.teamName = arguments?.getString(Constants.TEAM_NAME)
+        gameVM.fetchGameList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentGameBinding.bind(view)
-        binding.textTeam.text = teamName
+        binding.textTeam.text = gameVM.teamName
         rv = binding.rvTeamList
         setListeners()
         setObservers()
@@ -56,6 +47,7 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
         super.onStart()
         mainActivity.controlBottomNav(Constants.SLIDE_DOWN)
         mainActivity.controlBottomNav(Constants.HIDE)
+        rv?.scrollToPosition(gameVM.gameRVPosition)
     }
 
     override fun setListeners() {
@@ -85,15 +77,15 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
             val adapter = GameListAdapter(mutablePlayerList)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
-            rv?.scrollToPosition(mainActivity.gameRVPosition)
+            rv?.scrollToPosition(gameVM.gameRVPosition)
         } else {
             // update existing adapter with updated data
             rvState = rv?.layoutManager?.onSaveInstanceState()
             val currentAdapter = rv?.adapter as? GameListAdapter
-            currentAdapter?.addToGameList(gameList)
+            currentAdapter?.replaceGameList(gameList)
             currentAdapter?.notifyItemRangeChanged(0, currentItemCount)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
-            rv?.scrollToPosition(mainActivity.gameRVPosition)
+            rv?.scrollToPosition(gameVM.gameRVPosition)
         }
     }
 
@@ -114,7 +106,7 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = (recyclerView.layoutManager as LinearLayoutManager)
-                mainActivity.gameRVPosition =
+                gameVM.gameRVPosition =
                     layoutManager.findFirstVisibleItemPosition()
                 setupInfiniteScroll(dy, layoutManager)
             }
@@ -123,7 +115,7 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
 
     private fun observeLoadStatusForLoadMore(statusLD: LiveData<LoadStatus>) {
         statusLD.observe(viewLifecycleOwner) {
-            canLoadMore = when (it) {
+            gameVM.canLoadMore = when (it) {
                 LoadStatus.LOADING -> {
                     false
                 }
@@ -142,14 +134,14 @@ class GameFragment : Fragment(R.layout.fragment_game), UiHelper {
 
     private fun setupInfiniteScroll(dy: Int, lm: LinearLayoutManager) {
         if (dy > 0) { //check for scroll down
-            visibleItemCount = lm.childCount
-            totalItemCount = lm.itemCount
-            firstVisibleItemPos = mainActivity.gameRVPosition
+            gameVM.visibleItemCount = lm.childCount
+            gameVM.totalItemCount = lm.itemCount
+            gameVM.firstVisibleItemPos = gameVM.gameRVPosition
 
-            if (canLoadMore) {
-                if ((visibleItemCount + firstVisibleItemPos) >= totalItemCount) {
-                    currentPage += 1
-                    gameVM.fetchGameList(listOf(teamId), currentPage)
+            if (gameVM.canLoadMore) {
+                if ((gameVM.visibleItemCount + gameVM.firstVisibleItemPos) >= gameVM.totalItemCount) {
+                    gameVM.currentPage += 1
+                    gameVM.fetchGameList()
                 }
             }
 

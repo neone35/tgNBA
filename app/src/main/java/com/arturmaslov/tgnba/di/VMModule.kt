@@ -1,6 +1,6 @@
 package com.arturmaslov.tgnba.di
 
-import com.arturmaslov.tgnba.BaseVM
+import com.arturmaslov.tgnba.ui.BaseVM
 import com.arturmaslov.tgnba.ui.home.GameVM
 import com.arturmaslov.tgnba.ui.home.HomeVM
 import com.arturmaslov.tgnba.ui.main.MainVM

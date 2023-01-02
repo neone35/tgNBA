@@ -1,4 +1,4 @@
-package com.arturmaslov.tgnba
+package com.arturmaslov.tgnba.ui
 
 import android.app.Application
 import androidx.lifecycle.LiveData

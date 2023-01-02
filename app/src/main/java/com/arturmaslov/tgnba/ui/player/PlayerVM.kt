@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.arturmaslov.tgnba.BaseVM
 import com.arturmaslov.tgnba.data.models.Player
 import com.arturmaslov.tgnba.data.source.LoadStatus
 import com.arturmaslov.tgnba.data.source.MainRepository
+import com.arturmaslov.tgnba.ui.BaseVM
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 
@@ -20,6 +20,8 @@ class PlayerVM(
     val extPlayerList: LiveData<List<Player?>?> get() = _playerList
     private val _searchTerm = MutableLiveData<String?>()
     val extSearchTerm: LiveData<String?> get() = _searchTerm
+
+    var playerRVPosition: Int = 0
 
     init {
         Logger.i("PlayerVM created!")

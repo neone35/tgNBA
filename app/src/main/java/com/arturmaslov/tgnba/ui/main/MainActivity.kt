@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity(), UiHelper {
     private var navController: NavController? = null
 
     private var disableBackCallback: OnBackPressedCallback? = null
-    var teamRVPosition: Int = 0
-    var playerRVPosition: Int = 0
-    var gameRVPosition: Int = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,11 +115,13 @@ class MainActivity : AppCompatActivity(), UiHelper {
 
     private fun showLoading(showLoading: Boolean) {
         Logger.d("showing loading is $showLoading")
+        val pb = binding.pbLoading
+        val fragContainer = binding.fragContainerMain
         if (showLoading) {
-            binding.pbLoading.visibility = View.VISIBLE
+            pb.visibility = View.VISIBLE
         } else {
-            binding.pbLoading.visibility = View.GONE
-            binding.fragContainerMain.visibility = View.VISIBLE
+            pb.visibility = View.GONE
+            fragContainer.visibility = View.VISIBLE
         }
     }
 

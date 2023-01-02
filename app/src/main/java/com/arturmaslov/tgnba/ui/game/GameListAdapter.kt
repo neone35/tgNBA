@@ -5,10 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arturmaslov.tgnba.data.models.Game
 import com.arturmaslov.tgnba.databinding.ItemGameBinding
-import com.orhanobut.logger.Logger
 
 class GameListAdapter(
-    private val gameList: MutableList<Game?>?
+    private var gameList: MutableList<Game?>?
 ) : RecyclerView.Adapter<GameListAdapter.ViewHolder>() {
 
     private lateinit var itemBinding: ItemGameBinding
@@ -34,14 +33,8 @@ class GameListAdapter(
         return gameList?.size ?: 0
     }
 
-    fun addToGameList(gameList: List<Game?>?) {
-        gameList?.forEach { game ->
-            if (game != null) {
-                Logger.d("GameListAdapter adding game $game")
-                this.gameList?.add(game)
-            }
-        }
-        gameList?.sortedByDescending { it?.date }
+    fun replaceGameList(gameList: List<Game?>?) {
+        this.gameList = gameList?.sortedByDescending { it?.date }?.toMutableList()
     }
 
     inner class ViewHolder(private val itemBinding: ItemGameBinding) :
@@ -52,7 +45,6 @@ class GameListAdapter(
             itemBinding.tvGameHomeScore.text = game.homeTeamScore.toString()
             itemBinding.tvGameVisitorTeam.text = game.visitorTeam?.name
             itemBinding.tvGameVisitorScore.text = game.visitorTeamScore.toString()
-
         }
     }
 

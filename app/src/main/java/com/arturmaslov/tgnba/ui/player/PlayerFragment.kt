@@ -107,7 +107,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
             val adapter = PlayerListAdapter(mutablePlayerList)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
-            rv?.scrollToPosition(mainActivity.playerRVPosition)
+            rv?.scrollToPosition(playerVM.playerRVPosition)
         } else {
             // update existing adapter with updated data
             rvState = rv?.layoutManager?.onSaveInstanceState()
@@ -115,7 +115,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
             currentAdapter?.updatePlayerList(playerList)
             currentAdapter?.notifyItemRangeChanged(0, currentItemCount)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
-            rv?.scrollToPosition(mainActivity.playerRVPosition)
+            rv?.scrollToPosition(playerVM.playerRVPosition)
         }
     }
 
@@ -135,7 +135,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), UiHelper {
         rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                mainActivity.playerRVPosition =
+                playerVM.playerRVPosition =
                     (recyclerView.layoutManager as LinearLayoutManager)
                         .findFirstCompletelyVisibleItemPosition()
             }

@@ -82,7 +82,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
             val adapter = TeamListAdapter(mutableTeamList)
             rv?.adapter = adapter
             rv?.layoutManager = LinearLayoutManager(context)
-            rv?.scrollToPosition(mainActivity.teamRVPosition)
+            rv?.scrollToPosition(homeVM.teamRVPosition)
         } else {
             // update existing adapter with updated data
             rvState = rv?.layoutManager?.onSaveInstanceState()
@@ -90,7 +90,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
             currentAdapter?.updateTeamList(teamList)
             currentAdapter?.notifyItemRangeChanged(0, currentItemCount)
             rv?.layoutManager?.onRestoreInstanceState(rvState)
-            rv?.scrollToPosition(mainActivity.teamRVPosition)
+            rv?.scrollToPosition(homeVM.teamRVPosition)
         }
     }
 
@@ -133,7 +133,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), UiHelper {
         rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                mainActivity.teamRVPosition =
+                homeVM.teamRVPosition =
                     (recyclerView.layoutManager as LinearLayoutManager)
                         .findFirstCompletelyVisibleItemPosition()
             }
